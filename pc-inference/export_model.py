@@ -11,7 +11,7 @@ def export_model_optimized():
     # --- CẤU HÌNH EXPORT (Chỉnh sửa tại đây) ---
     CONFIG = {
         "model_pt": "models/yolo11s.pt",   # File weight gốc đặt trong thư mục models
-        "imgsz": 320,                      # Kích thước ảnh (320 là nhanh nhất cho CPU)
+        "imgsz": 640,                      # Kích thước ảnh (640 cho độ chi tiết tốt nhất)
         "half_precision": True,     # FP16 giúp tăng tốc độ trên ARM (Pi 5)
         "int8": False               # Tắt int8 vì NCNN ổn định nhất với FP16
     }

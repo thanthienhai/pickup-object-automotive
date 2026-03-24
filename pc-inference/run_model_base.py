@@ -43,10 +43,10 @@ def run_inference():
     # --- CẤU HÌNH CAMERA & MODEL ---
     CAM_CONFIG = {
         "source": 0,           # ID Camera (0 cho webcam mặc định, 1 cho camera USB ngoài)
-        "width": 320,          # Độ phân giải chiều ngang
-        "height": 240,         # Độ phân giải chiều dọc
+        "width": 640,          # Độ phân giải chiều ngang (Đã nâng lên 640)
+        "height": 480,         # Độ phân giải chiều dọc (Đã nâng lên 480)
         "fps_limit": 15,       # Giới hạn FPS đầu vào của Camera
-        "sim_pi_fps": 10       # Tốc độ giả lập trên Raspberry Pi 5 (~10 FPS / suy luận khoảng 100ms)
+        "sim_pi_fps": 3        # Tốc độ giả lập Pi 5 khi chạy 640 (Giảm xuống ~3 FPS do nặng hơn)
     }
     
     # Load model. Thay bằng đường dẫn tới model NCNN hoặc .pt của bạn
@@ -101,7 +101,7 @@ def run_inference():
         # Chạy dự đoán (predict) trên frame hiện tại
         results = model.predict(
             source=frame,
-            imgsz=320,
+            imgsz=640,
             classes=allowed_classes, # --> CHÌA KHÓA: Chỉ xử lý các đồ vật, bỏ qua person (class 0)
             vid_stride=2,            # Bỏ qua luân phiên khung hình
             verbose=False            # Tắt log để giao diện terminal dễ nhìn hơn

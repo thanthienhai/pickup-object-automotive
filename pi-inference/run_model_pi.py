@@ -9,9 +9,9 @@ from datetime import datetime
 def run_inference():
     # --- CẤU HÌNH CAMERA & MODEL ---
     CAM_CONFIG = {
-        "source": 0,  # ID Camera (0 thường là webcam mặc định hoặc /dev/video0 trên Pi)
-        "width": 320,  # Độ phân giải chiều ngang
-        "height": 240,  # Độ phân giải chiều dọc
+        "source": 0,  # ID Camera
+        "width": 640,  # Độ phân giải chiều ngang
+        "height": 480,  # Độ phân giải chiều dọc
         "fps_limit": 15,  # Giới hạn FPS đầu vào của Camera
     }
 
@@ -77,10 +77,9 @@ def run_inference():
                 print("Đã mất kết nối hoặc không thể lấy frame từ camera.")
                 break
 
-            # Chạy dự đoán (predict) trên frame hiện tại
             results = model.predict(
                 source=frame,
-                imgsz=320,
+                imgsz=640,
                 classes=allowed_classes,  # Bỏ qua person (class 0)
                 vid_stride=2,  # Bỏ qua luân phiên khung hình
                 verbose=False,  # Tắt log để terminal dễ nhìn hơn
