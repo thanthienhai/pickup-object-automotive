@@ -119,6 +119,7 @@ def run_inference_and_telemetry():
             boxes = results[0].boxes
             best_obj = None
             max_y = -1
+            sent_packet = ""  # Khởi tạo biến lưu bản tin UART gửi đi
 
             if len(boxes) > 0:
                 # Tìm vật thể nằm ở vị trí Y thấp nhất trên màn hình (gần xe nhất)
@@ -148,7 +149,7 @@ def run_inference_and_telemetry():
                     )
             else:
                 # Không thấy vật -> Gửi Heartbeat
-                send_telemetry(ser, 0, 0, 0, 0, 0)
+                sent_packet = send_telemetry(ser, 0, 0, 0, 0, 0)
                 print(f"FPS: {fps:.1f} | [UART SENT] Heartbeat: $0,0,0,0,0#")
             # -------------------------------------------
 
@@ -157,8 +158,8 @@ def run_inference_and_telemetry():
             if current_time - last_save_time >= SAVE_INTERVAL:
                 annotated_frame = results[0].plot()
 
-                # Vẽ thông tin UART lên ảnh
-                uart_text = f"UART: {sent_packet.strip() if best_obj and 'sent_packet' in locals() and sent_packet else '$0,0,0,0,0#'}"
+                # Vẽ thông tin UART lên ảnh (Dùng sent_packet đã lưu)
+                uart_text = f"UART: {sent_packet.strip() if sent_packet else '$0,0,0,0,0#'}"
                 cv2.putText(
                     annotated_frame,
                     uart_text,
