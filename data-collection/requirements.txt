@@ -1,0 +1,2 @@
+# Thư viện duy nhất cần cho Raspberry Pi Lite thu thập ảnh (không UI)
+opencv-python-headless>=4.8.0

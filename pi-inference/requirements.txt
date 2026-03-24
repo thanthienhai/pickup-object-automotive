@@ -9,3 +9,6 @@ ultralytics>=8.1.0
 
 # Thư viện core NCNN cung cấp inference engine cho định dạng NCNN (cần thiết để model NCNN có thể chạy được qua YOLO)
 ncnn>=1.0.20231027
+
+# Thư viện giao tiếp Serial (UART/USB)
+pyserial>=3.5

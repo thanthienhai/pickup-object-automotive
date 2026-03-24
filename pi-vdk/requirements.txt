@@ -1,0 +1,18 @@
+# --- Raspberry Pi 5 Headless / UART Telemetry Requirements ---
+
+# 1. Computer Vision & Hình ảnh
+# Dùng bản opencv-python-headless thay vì opencv-python để tránh lỗi cài đặt 
+# liên quan đến các thư viện giao diện đồ họa (X11, GTK, QT) trên Pi OS Lite (không màn hình).
+opencv-python-headless>=4.8.0
+
+# 2. Machine Learning / Object Detection
+# Thư viện core của Ultralytics (YOLO) để load model NCNN
+ultralytics>=8.1.0
+
+# 3. NCNN Engine (Backend Tối ưu hóa)
+# Bắt buộc phải cài để YOLO có thể gọi inference engine NCNN trên ARM64 (CPU của Pi 5)
+ncnn>=1.0.20231027
+
+# 4. Giao tiếp UART / Serial
+# Thư viện pyserial để mở cổng USB hoặc GPIO TX/RX giao tiếp với vi điều khiển
+pyserial>=3.5

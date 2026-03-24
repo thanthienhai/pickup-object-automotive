@@ -1,0 +1,3 @@
+# Thư viện duy nhất cần cho quá trình Train và Export (chỉ chạy trên PC/Colab)
+ultralytics>=8.1.0
+# Cần torchvision/pytorch (tự động load qua conda/pip tùy hệ thống)
