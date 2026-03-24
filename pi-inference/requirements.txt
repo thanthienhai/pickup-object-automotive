@@ -1,0 +1,11 @@
+# --- Raspberry Pi 5 Headless / NCNN Inference Requirements ---
+
+# Sử dụng bản opencv-python-headless để tránh lỗi yêu cầu giao diện (X11/Wayland/GUI) trên hệ điều hành không có màn hình (OS Lite).
+# Nó cũng nhẹ hơn đáng kể do không build kèm Qt/GTK.
+opencv-python-headless>=4.8.0
+
+# Thư viện chính của YOLO để load và chạy mô hình
+ultralytics>=8.1.0
+
+# Thư viện core NCNN cung cấp inference engine cho định dạng NCNN (cần thiết để model NCNN có thể chạy được qua YOLO)
+ncnn>=1.0.20231027
