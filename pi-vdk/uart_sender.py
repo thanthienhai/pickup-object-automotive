@@ -9,8 +9,8 @@ from datetime import datetime
 # --- CẤU HÌNH HỆ THỐNG ---
 CAM_CONFIG = {
     "source": 0,  # ID Camera
-    "width": 320,
-    "height": 240,
+    "width": 640,
+    "height": 480,
     "fps_limit": 15,
 }
 
@@ -23,7 +23,7 @@ UART_CONFIG = {
 
 SAVE_DIR = "output_frames"
 SAVE_INTERVAL = 1.0
-model_path = "./models/yolo11n_ncnn_model"
+model_path = "./models/yolo11s_ncnn_model"
 # -------------------------
 
 
@@ -106,7 +106,7 @@ def run_inference_and_telemetry():
 
             results = model.predict(
                 source=frame,
-                imgsz=320,
+                imgsz=640,
                 classes=allowed_classes,
                 vid_stride=2,
                 verbose=False,
