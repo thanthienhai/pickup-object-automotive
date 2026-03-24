@@ -23,7 +23,7 @@ UART_CONFIG = {
 
 SAVE_DIR = "output_frames"
 SAVE_INTERVAL = 1.0
-model_path = "../models/yolo11n_ncnn_model"
+model_path = "./models/yolo11n_ncnn_model"
 # -------------------------
 
 
