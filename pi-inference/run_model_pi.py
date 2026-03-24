@@ -21,7 +21,7 @@ def run_inference():
 
     # Load model NCNN (lưu ý đường dẫn tới folder ncnn exported)
     # Cần chắc chắn bạn đã export model sang định dạng ncnn trước khi chạy
-    model_path = "../models/yolo11n_ncnn_model"
+    model_path = "./models/yolo11n_ncnn_model"
     # -------------------------------
 
     # Tạo thư mục lưu ảnh nếu chưa có
