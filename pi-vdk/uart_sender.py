@@ -123,19 +123,14 @@ def run_inference_and_telemetry():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAM_CONFIG["height"])
     cap.set(cv2.CAP_PROP_FPS, CAM_CONFIG["fps_limit"])
 
-    # Các nhãn cần nhận diện (Vietnamese without accents)
-    # 32: Bong (Quả bóng) | 39: Chai nuoc (Chai nước) | 41: Coc (Cái cốc) 
-    # 47: Qua tao (Quả táo) | 49: Qua cam (Quả cam) | 67: Dien thoai (Điện thoại)
-    allowed_classes = [32, 39, 41, 47, 49, 67]
+    # Các nhãn cần nhận diện dựa trên mô hình mới
+    allowed_classes = [0, 1, 2]
 
     # Mapping hiển thị tên tiếng Việt không dấu
     VIETNAMESE_NAMES = {
-        32: "Bong",
-        39: "Chai nuoc",
-        41: "Coc",
-        47: "Qua tao",
-        49: "Qua cam",
-        67: "Dien thoai",
+        0: "bong",
+        1: "cam",
+        2: "nut",
     }
 
     print(f"Bắt đầu Inference & Telemetry với Cam ID: {CAM_CONFIG['source']}")
