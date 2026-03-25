@@ -209,9 +209,10 @@ def run_inference_and_telemetry():
                     update_lcd(f"Vat: {class_name}", f"{sent_packet.strip() if sent_packet else 'NO UART'}")
 
             else:
-                # Không thấy vật -> Gửi Heartbeat
-                sent_packet = send_telemetry(ser, 0, 0, 0, 0, 0)
-                print(f"FPS: {fps:.1f} | [UART SENT] Heartbeat: $0,0,0,0,0#")
+                # Không thấy vật -> KHÔNG GỬI UART nữa (bỏ comment gửi heartbeat)
+                # sent_packet = send_telemetry(ser, 0, 0, 0, 0, 0)
+                sent_packet = ""
+                print(f"FPS: {fps:.1f} | [UART] Không thấy vật, không gửi dữ liệu.")
                 # Hiển thị trên màn hình là không thấy gì
                 update_lcd("Trang thai:", "Khong co vat")
             # -------------------------------------------
