@@ -31,7 +31,7 @@ UART_CONFIG = {
 
 SAVE_DIR = "output_frames"
 SAVE_INTERVAL = 1.0
-model_path = "./models/yolo11s_ncnn_model"
+model_path = "./models/last_ncnn_model"
 # -------------------------
 
 # --- KHỞI TẠO LCD ---
@@ -123,7 +123,20 @@ def run_inference_and_telemetry():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAM_CONFIG["height"])
     cap.set(cv2.CAP_PROP_FPS, CAM_CONFIG["fps_limit"])
 
-    allowed_classes = list(range(1, 80))  # Bỏ qua person (id=0)
+    # Các nhãn cần nhận diện (Vietnamese without accents)
+    # 32: Bong (Quả bóng) | 39: Chai nuoc (Chai nước) | 41: Coc (Cái cốc) 
+    # 47: Qua tao (Quả táo) | 49: Qua cam (Quả cam) | 67: Dien thoai (Điện thoại)
+    allowed_classes = [32, 39, 41, 47, 49, 67]
+
+    # Mapping hiển thị tên tiếng Việt không dấu
+    VIETNAMESE_NAMES = {
+        32: "Bong",
+        39: "Chai nuoc",
+        41: "Coc",
+        47: "Qua tao",
+        49: "Qua cam",
+        67: "Dien thoai",
+    }
 
     print(f"Bắt đầu Inference & Telemetry với Cam ID: {CAM_CONFIG['source']}")
     last_save_time = time.time()
@@ -190,8 +203,8 @@ def run_inference_and_telemetry():
                     )
                     
                     # Cập nhật thông tin lên LCD
-                    # Sử dụng model.names để lấy tên nhãn từ ID
-                    class_name = model.names.get(c_id, f"ID:{c_id}")
+                    # Sử dụng VIETNAMESE_NAMES để hiển thị tên tiếng Việt không dấu
+                    class_name = VIETNAMESE_NAMES.get(c_id, f"ID:{c_id}")
                     # In ra Dòng 1: Vật - Dòng 2: Bản tin UART 
                     update_lcd(f"Vat: {class_name}", f"{sent_packet.strip() if sent_packet else 'NO UART'}")
 

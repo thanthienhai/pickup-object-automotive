@@ -208,3 +208,6 @@ __marimo__/
 
 torch_lib/
 *.pt
+*.jpg
+*.png
+*.txt

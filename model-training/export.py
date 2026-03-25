@@ -15,7 +15,7 @@ def main():
     # Export cực kỳ quan trọng cho Raspberry Pi
     # Khuyến khích: imgsz 320 và sử dụng half=True để chuyển weights sang FP16
     # (giảm 1/2 kích thước model, tăng tốc trên CPU ARM)
-    success = model.export(format="ncnn", imgsz=320, half=True, optimize=True)
+    success = model.export(format="ncnn", imgsz=320, half=True, optimize=False)
 
     if success:
         print("\n--- XUẤT NCNN THÀNH CÔNG ---")

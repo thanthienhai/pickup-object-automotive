@@ -1,0 +1,8 @@
+path: D:\JOB\pickup-object-automotive\model-training\output_dataset
+train: images/train
+val: images/train
+
+names:
+  0: bangdinh
+  1: bong
+  2: tenis
