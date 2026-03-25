@@ -6,6 +6,14 @@ import time
 import serial
 from datetime import datetime
 
+# Import thư viện LCD
+try:
+    from RPLCD.i2c import CharLCD
+    lcd_available = True
+except ImportError:
+    lcd_available = False
+    print("[WARNING] Không tìm thấy thư viện RPLCD. Màn hình LCD sẽ bị vô hiệu hóa.")
+
 # --- CẤU HÌNH HỆ THỐNG ---
 CAM_CONFIG = {
     "source": 0,  # ID Camera
@@ -17,7 +25,7 @@ CAM_CONFIG = {
 # Cấu hình UART (Kết nối Pi với Vi điều khiển)
 UART_CONFIG = {
     "port": "/dev/ttyUSB0",  # Sửa lại nếu dùng chân GPIO (vd: /dev/serial0)
-    "baudrate": 115200,
+    "baudrate": 9200,
     "timeout": 1,
 }
 
@@ -25,6 +33,36 @@ SAVE_DIR = "output_frames"
 SAVE_INTERVAL = 1.0
 model_path = "./models/yolo11s_ncnn_model"
 # -------------------------
+
+# --- KHỞI TẠO LCD ---
+lcd = None
+if lcd_available:
+    try:
+        lcd = CharLCD(i2c_expander='PCF8574', address=0x27, port=1, cols=16, rows=2, dotsize=8)
+        lcd.clear()
+        lcd.write_string('He thong khoi dong...')
+        time.sleep(1)
+        lcd.clear()
+        print("[LCD OK] Khởi tạo màn hình LCD thành công.")
+    except Exception as e:
+        print(f"[LCD ERROR] Lỗi khi khởi tạo màn hình: {e}")
+        lcd = None
+
+def update_lcd(line1, line2=""):
+    """Cập nhật nội dung lên màn hình LCD"""
+    if lcd is not None:
+        try:
+            # Rút gọn chuỗi nếu dài hơn 16 ký tự để tránh lỗi tràn màn hình
+            line1_safe = line1[:16].ljust(16, ' ')
+            line2_safe = line2[:16].ljust(16, ' ')
+            
+            lcd.cursor_pos = (0, 0)
+            lcd.write_string(line1_safe)
+            lcd.cursor_pos = (1, 0)
+            lcd.write_string(line2_safe)
+        except Exception as e:
+            print(f"[LCD UPDATE ERROR]: {e}")
+# --------------------
 
 
 def send_telemetry(serial_conn, status, class_id=0, x_center=0, y_max=0, area=0):
@@ -147,10 +185,19 @@ def run_inference_and_telemetry():
                     print(
                         f"FPS: {fps:.1f} | [UART SENT] {sent_packet.strip() if sent_packet else 'No Serial'}"
                     )
+                    
+                    # Cập nhật thông tin lên LCD
+                    # Sử dụng model.names để lấy tên nhãn từ ID
+                    class_name = model.names.get(c_id, f"ID:{c_id}")
+                    # In ra Dòng 1: Vật - Dòng 2: Bản tin UART 
+                    update_lcd(f"Vat: {class_name}", f"{sent_packet.strip() if sent_packet else 'NO UART'}")
+
             else:
                 # Không thấy vật -> Gửi Heartbeat
                 sent_packet = send_telemetry(ser, 0, 0, 0, 0, 0)
                 print(f"FPS: {fps:.1f} | [UART SENT] Heartbeat: $0,0,0,0,0#")
+                # Hiển thị trên màn hình là không thấy gì
+                update_lcd("Trang thai:", "Khong co vat")
             # -------------------------------------------
 
             # Lưu ảnh kiểm tra
@@ -184,6 +231,13 @@ def run_inference_and_telemetry():
         if ser and ser.is_open:
             ser.close()
             print("[UART] Đã đóng cổng Serial.")
+            
+        if lcd:
+            lcd.clear()
+            lcd.write_string('Tam biet!')
+            time.sleep(1)
+            lcd.clear()
+            
         print("[INFO] Thoát chương trình.")
 
 
