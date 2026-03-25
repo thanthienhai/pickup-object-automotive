@@ -145,6 +145,7 @@ def run_inference_and_telemetry():
             results = model.predict(
                 source=frame,
                 imgsz=640,
+                conf=0.3,
                 classes=allowed_classes,
                 vid_stride=2,
                 verbose=False,
@@ -156,6 +157,7 @@ def run_inference_and_telemetry():
             # --- XỬ LÝ KẾT QUẢ DETECTION ĐỂ GỬI UART ---
             boxes = results[0].boxes
             best_obj = None
+            best_box_coords = None # Biến lưu tọa độ box tốt nhất để vẽ
             max_y = -1
             sent_packet = ""  # Khởi tạo biến lưu bản tin UART gửi đi
 
@@ -176,6 +178,7 @@ def run_inference_and_telemetry():
                     if y_max > max_y:
                         max_y = y_max
                         best_obj = (class_id, x_center, y_max, area)
+                        best_box_coords = (x1, y1, x2, y2) # Lưu lại tọa độ
 
                 # Gửi telemetry với obj tìm được
                 if best_obj:
@@ -205,6 +208,19 @@ def run_inference_and_telemetry():
             if current_time - last_save_time >= SAVE_INTERVAL:
                 annotated_frame = results[0].plot()
 
+                # Vẽ viền xanh lá dày và chữ nổi bật cho vật thể đang được chọn gửi UART
+                if best_box_coords:
+                    bx1, by1, bx2, by2 = map(int, best_box_coords)
+                    # Vẽ khung hình chữ nhật nổi bật (Màu xanh lá mạ - Xanh lục)
+                    cv2.rectangle(annotated_frame, (bx1, by1), (bx2, by2), (0, 255, 0), 4)
+                    
+                    # Vẽ nhãn CHỌN
+                    label_text = f"DANG CHON GUI UART: {class_name}"
+                    (tw, th), _ = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+                    cv2.rectangle(annotated_frame, (bx1, by1 - th - 10), (bx1 + tw, by1), (0, 255, 0), -1)
+                    cv2.putText(annotated_frame, label_text, (bx1, by1 - 5), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
+
                 # Vẽ thông tin UART lên ảnh (Dùng sent_packet đã lưu)
                 uart_text = f"UART: {sent_packet.strip() if sent_packet else '$0,0,0,0,0#'}"
                 cv2.putText(
@@ -212,9 +228,9 @@ def run_inference_and_telemetry():
                     uart_text,
                     (10, 40),
                     cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5,
+                    0.7,
                     (0, 0, 255),
-                    1,
+                    2,
                 )
 
                 filename = os.path.join(
