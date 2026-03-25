@@ -193,9 +193,14 @@ def run_inference_and_telemetry():
                     c_id, x_c, y_m, ar = best_obj
                     sent_packet = send_telemetry(ser, 1, c_id, x_c, y_m, ar)
 
-                    print(
-                        f"FPS: {fps:.1f} | [UART SENT] {sent_packet.strip() if sent_packet else 'No Serial'}"
-                    )
+                    if sent_packet:
+                        print(f"FPS: {fps:.1f} | [UART SENT] {sent_packet.strip()}")
+                    else:
+                        # Ghi log tọa độ ra file nếu không có kết nối UART
+                        log_line = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] NO_UART | FPS: {fps:.1f} | OBJ: {VIETNAMESE_NAMES.get(c_id, f'ID:{c_id}')} | Packet: $1,{c_id},{int(x_c)},{int(y_m)},{int(ar)}#"
+                        print(log_line)
+                        with open("telemetry_log.txt", "a") as f:
+                            f.write(log_line + "\n")
                     
                     # Cập nhật thông tin lên LCD
                     # Sử dụng VIETNAMESE_NAMES để hiển thị tên tiếng Việt không dấu
